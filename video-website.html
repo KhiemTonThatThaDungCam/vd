@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Love you forever</title>
+  <style>
+    :root{
+      --bg1:#6a7ff6;/* #667eea-ish */
+      --bg2:#8a54ff;/* #764ba2-ish */
+      --rose1:#ff7ab6;
+      --rose2:#ff4d8d;
+      --glass:rgba(255,255,255,.12);
+      --white: #fff;
+      --ink:#1f2937;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color:var(--ink);
+      background: radial-gradient(1200px 800px at 20% 0%, rgba(255,255,255,.08) 0%, transparent 60%),
+                  radial-gradient(1000px 800px at 80% 100%, rgba(255,255,255,.08) 0%, transparent 60%),
+                  linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+      min-height:100vh;
+      display:flex;align-items:center;justify-content:center;
+      overflow-x:hidden;
+    }
+
+    /* Lớp nền trái tim bay mờ mờ */
+    .ambient-hearts{
+      position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+    }
+    .ambient-hearts span{
+      position:absolute;
+      display:block;
+      filter:blur(0.3px);
+      opacity:.15;
+      animation: drift var(--dur) linear infinite;
+      font-size: var(--size);
+    }
+    @keyframes drift{
+      0%{ transform:translate(var(--x-start), 110vh) rotate(0deg); }
+      100%{ transform:translate(var(--x-end), -20vh) rotate(360deg); }
+    }
+
+    /* Container chính */
+    .container{
+      position:relative;z-index:1;
+      width:min(100%, 980px);
+      padding:24px;
+    }
+
+    .shell{
+      display:grid;grid-template-columns: 1.1fr .9fr;gap:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,.16));
+      backdrop-filter: blur(12px) saturate(120%);
+      border:1px solid rgba(255,255,255,.25);
+      border-radius:22px;box-shadow:0 30px 60px rgba(0,0,0,.22);
+      overflow:hidden;min-height:560px;
+    }
+
+    /* Panel trái: hero */
+    .left{
+      position:relative;color:var(--white);
+      background: radial-gradient(80% 80% at 20% 20%, rgba(255,255,255,.12) 0%, transparent 60%),
+                  linear-gradient(135deg, #ff8ad4 0%, #f5576c 100%);
+      display:flex;flex-direction:column;justify-content:center;align-items:center;
+      padding:48px 36px; isolation:isolate;
+    }
+    .glow{position:absolute;inset:-40%;filter:blur(60px);opacity:.35;z-index:-1;background:conic-gradient(from 120deg, #fff0, #fff4, #fff0)}
+
+    .hero-heart{
+      width:160px;height:160px; position:relative; display:grid;place-items:center; margin-bottom:22px;
+    }
+    .hero-heart::before, .hero-heart::after{
+      content:""; position:absolute; width:100px; height:160px; background:linear-gradient(180deg, #fff, #ffd7e9);
+      border-radius:100px 100px 0 0; transform-origin:50% 100%; box-shadow:0 10px 30px rgba(0,0,0,.15);
+    }
+    .hero-heart::before{ left:50%; transform:translateX(-100%) rotate(-45deg); }
+    .hero-heart::after{ left:50%; transform:translateX(0%) rotate(45deg); }
+    
+    /* Ảnh pic.jpg được đặt trong vòng tròn chuyển động */
+    .pulse-ring{
+      position:absolute;inset:0;border-radius:50%;
+      box-shadow:0 0 0 0 rgba(255,255,255,.55);
+      animation:pulse 2.2s ease-out infinite;
+    }
+    
+    .profile-image{
+      width:155px;height:155px;
+      border-radius:50%;
+      object-fit:cover;
+      border:3px solid rgba(255,255,255,.8);
+      box-shadow:0 8px 25px rgba(0,0,0,.25);
+      filter:brightness(1.05) contrast(1.1);
+      z-index:2;
+      position:relative;
+      animation: imagePulse 2.2s ease-out infinite;
+    }
+    
+    @keyframes imagePulse {
+      0% { transform: scale(1); }
+      70% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(255,255,255,.55) } 70%{ box-shadow:0 0 0 35px rgba(255,255,255,0) } 100%{ box-shadow:0 0 0 0 rgba(255,255,255,0) } }
+
+    .title{
+      font-weight:800; font-size: clamp(28px, 4.6vw, 44px); line-height:1.05; text-align:center;
+      background:linear-gradient(90deg,#fff,#ffe8f3); -webkit-background-clip:text; background-clip:text; color:transparent;
+      letter-spacing: .5px; margin-bottom:10px;
+    }
+    .subtitle{opacity:.92;text-align:center;font-weight:500}
+
+    /* Panel phải: card đăng nhập */
+    .right{background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;}
+    .card{
+      width:min(100%, 420px); background:var(--white); border-radius:18px; padding:28px 24px;
+      box-shadow:0 15px 35px rgba(0,0,0,.1); position:relative; overflow:hidden;
+    }
+    .card::after{
+      content:""; position:absolute; inset:-2px; border-radius:20px; background:conic-gradient(from 120deg, #ffd6ea, #e6e6ff, #ffd6ea);
+      filter:blur(24px); opacity:.25; z-index:-1;
+    }
+
+    .card h2{font-weight:700; font-size:22px; margin-bottom:8px; display:flex; align-items:center; gap:8px}
+    .card h2 .emoji{filter:drop-shadow(0 6px 8px rgba(246,52,139,.35))}
+    .hint{font-size:13px; opacity:.8; margin-bottom:20px}
+
+    .form-group{margin-bottom:14px}
+    .form-group label{ display:block; margin-bottom:8px; font-weight:600; font-size:14px }
+    .form-group input{
+      width:100%; padding:14px 16px; border:1.8px solid #e7e7ee; border-radius:12px; font-size:16px;
+      background:#fcfcff; transition:.25s; letter-spacing:2px; text-align:center;
+    }
+    .form-group input:focus{ outline:none; border-color:#b9b9ff; box-shadow:0 0 0 6px rgba(120,120,255,.12); background:#fff }
+
+    .login-btn{
+      width:100%; background:linear-gradient(135deg, var(--bg1), var(--bg2)); color:#fff; border:none;
+      padding:14px 18px; border-radius:14px; font-weight:800; letter-spacing:.4px; cursor:pointer; transition:.25s; margin-top:6px;
+    }
+    .login-btn:hover{ transform: translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.15) }
+
+    .error{ color:#ff4d6d; font-size:13px; margin-top:10px; display:none }
+
+    .tiny-row{display:flex; justify-content:space-between; gap:8px; margin-top:12px; font-size:12px; color:#666}
+
+    /* Màn video */
+    .video-section{ display:none; padding:28px }
+    .video-section.active{ display:block }
+
+    .video-container{ position:relative; width:100%; max-width:780px; margin:0 auto; border-radius:16px; overflow:hidden; box-shadow:0 18px 40px rgba(0,0,0,.16) }
+    video{ width:100%; height:auto; display:block; background:#000 }
+
+    /* Trái tim bay nhỏ (foreground) */
+    .heart{ position:fixed; color:#ff69b4; font-size:20px; animation:heartFloat 3s ease-in-out forwards; pointer-events:none; z-index:3 }
+    @keyframes heartFloat{ 0%{ transform: translateY(0) rotate(0deg); opacity:1 } 50%{ transform: translateY(-60px) rotate(180deg); opacity:.9 } 100%{ transform: translateY(-140px) rotate(360deg); opacity:0 } }
+
+    /* Shake khi sai */
+    @keyframes shake{ 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-6px) } 75% { transform: translateX(6px) } }
+
+    @media (max-width: 900px){ .shell{ grid-template-columns:1fr } .left{ min-height:280px } }
+  </style>
+</head>
+<body>
+  <!-- Nền trái tim xa xa -->
+  <div class="ambient-hearts" id="ambientHearts"></div>
+
+  <div class="container">
+    <div class="shell">
+      <!-- Hero trái -->
+      <section class="left">
+        <div class="glow"></div>
+        <div class="hero-heart">
+          <div class="pulse-ring"></div>
+          <!-- Ảnh pic.jpg đặt trong vòng tròn -->
+          <img src="pic.jpg" alt="Profile Picture" class="profile-image" />
+        </div>
+        <h1 class="title">💖 For my lover</h1>
+        <p class="subtitle">Một nơi riêng tư chỉ dành cho em.</p>
+      </section>
+
+      <!-- Card đăng nhập phải -->
+      <section class="right" id="loginSection">
+        <form class="card" id="loginForm" autocomplete="off">
+          <p class="hint">Nhập sinh nhật của em theo định dạng <b>ddmmyyyy</b></p>
+
+          <div class="form-group">
+            <label for="birthday">Sinh nhật của em</label>
+            <input type="password" id="birthday" name="birthday" maxlength="8" required />
+          </div>
+
+          <button class="login-btn" type="submit">💝 Vào thôi nào! 💝</button>
+          <div class="error" id="errorMessage">🚫 Oops! Sinh nhật chưa đúng rồi.</div>
+        </form>
+      </section>
+
+      <!-- Phần video -->
+      <section class="video-section" id="videoSection">
+        <h2 style="text-align:center; margin-top:40px;">🎥 Video của bạn</h2>
+        <p id="videoNotice" style="text-align:center; font-size:13px; opacity:.8; margin:8px 0 30px"></p>
+        <div class="video-container" style="margin-top:20px;">
+          <video id="videoPlayer" controls playsinline preload="metadata" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='780' height='440'%3E%3Crect width='100%25' height='100%25' fill='%23000'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23bbb' font-size='22'%3EĐang tải video...%3C/text%3E%3C/svg%3E"></video>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    /* =================== CẤU HÌNH =================== */
+    const validBirthday = '27072005'; // mật khẩu
+    const fixedVideoPath = 'gsToan.mp4'; // video trong cùng thư mục
+
+    /* =================== TIỆN ÍCH TRÁI TIM =================== */
+    function spawnHeart(x, y, size=20, life=3000){
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = Math.random() < .15 ? '💘' : (Math.random()<.5 ? '💖':'💗');
+      heart.style.left = (x - size/2) + 'px';
+      heart.style.top = (y - size/2) + 'px';
+      heart.style.fontSize = size + 'px';
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(), life);
+    }
+
+    // Mưa tim nhẹ khi di chuột
+    let lastTrail = 0;
+    window.addEventListener('mousemove', (e)=>{
+      const now = performance.now();
+      if(now - lastTrail > 70){
+        lastTrail = now;
+        spawnHeart(e.clientX + (Math.random()*12-6), e.clientY + (Math.random()*12-6), 12 + Math.random()*12, 2200);
+      }
+    }, {passive:true});
+
+    // Bối cảnh: nhiều trái tim xa xa trôi lên
+    const ambient = document.getElementById('ambientHearts');
+    function createAmbientHeart(){
+      const s = document.createElement('span');
+      s.textContent = '❤';
+      const startX = (Math.random()*100)|0; // vw
+      const endX = startX + (Math.random()*20 - 10); // trôi ngang nhẹ
+      const size = (Math.random()*28 + 10).toFixed(0) + 'px';
+      const dur = (Math.random()*12 + 10).toFixed(1) + 's';
+      s.style.setProperty('--x-start', startX + 'vw');
+      s.style.setProperty('--x-end', endX + 'vw');
+      s.style.setProperty('--size', size);
+      s.style.setProperty('--dur', dur);
+      s.style.left = startX + 'vw';
+      s.style.bottom = '-10vh';
+      ambient.appendChild(s);
+      setTimeout(()=> s.remove(), parseFloat(dur)*1000 + 2000);
+    }
+    // tạo nhiều lớp mây tim với tốc độ khác nhau
+    setInterval(createAmbientHeart, 380);
+    setTimeout(()=> setInterval(createAmbientHeart, 650), 1200);
+
+    // Hiệu ứng mưa tim định kỳ nền trước
+    function createFloatingHeart(){
+      const x = Math.random() * window.innerWidth;
+      const y = window.innerHeight - 10;
+      spawnHeart(x, y, 16 + Math.random()*18, 3000);
+    }
+    setInterval(createFloatingHeart, 420);
+
+    // Bắn pháo tim (burst)
+    function heartBurst(cx, cy, count=18){
+      for(let i=0;i<count;i++){
+        setTimeout(()=>{
+          spawnHeart(cx + (Math.random()*140-70), cy + (Math.random()*60-30), 16+Math.random()*20, 2600);
+        }, i*35);
+      }
+    }
+
+    /* =================== ĐĂNG NHẬP =================== */
+    const loginForm = document.getElementById('loginForm');
+    const loginSection = document.getElementById('loginSection');
+    const videoSection = document.getElementById('videoSection');
+    const errorMessage = document.getElementById('errorMessage');
+
+    let isLoggedIn = false;
+
+    loginForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const b = /** @type {HTMLInputElement} */(document.getElementById('birthday')).value.trim();
+      if(b === validBirthday){
+        isLoggedIn = true;
+        // hiệu ứng vào: burst + nhiều đợt
+        const rect = loginForm.getBoundingClientRect();
+        heartBurst(rect.left + rect.width/2, rect.top + rect.height/2, 26);
+        setTimeout(()=> heartBurst(window.innerWidth/2, window.innerHeight-80, 22), 220);
+
+        // chuyển màn
+        loginSection.style.display = 'none';
+        videoSection.classList.add('active');
+
+        // nạp video cố định
+        setVideoSource();
+        errorMessage.style.display = 'none';
+      }else{
+        errorMessage.style.display = 'block';
+        loginForm.style.animation = 'shake .5s';
+        setTimeout(()=> loginForm.style.animation = '', 520);
+      }
+    });
+
+    /* =================== VIDEO =================== */
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoNotice = document.getElementById('videoNotice');
+
+    function setVideoSource(){
+      // Sử dụng video trong cùng thư mục
+      videoPlayer.src = fixedVideoPath;
+      videoPlayer.load();
+      videoNotice.textContent = 'Video: ' + fixedVideoPath;
+    }
+
+    // Thông báo khi lỗi tải
+    videoPlayer.addEventListener('error', ()=>{
+      videoNotice.innerHTML = '⚠️ Không thể tải video <b>' + fixedVideoPath + '</b>. ' +
+        'Đảm bảo file video đã được đặt cùng thư mục với file HTML này.';
+    });
+
+    // Khi video load thành công
+    videoPlayer.addEventListener('loadedmetadata', ()=>{
+      videoNotice.textContent = '✅ Video đã sẵn sàng để phát!';
+    });
+  </script>
+</body>
+</html>
